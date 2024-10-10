@@ -4,10 +4,10 @@ const MONGODB_URI = process.env.MONGO_URI;
 
 if (!MONGODB_URI) throw new Error("MONGODB_URI is required.");
 
-let cached = global.mongoose;
+let cached = (global as any).mongoose;
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+  cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
 export const connectToDatabase = async () => {

@@ -12,11 +12,8 @@ import { connectToDatabase } from "../database";
 
 export async function createUser(user: CreateUserParams) {
   try {
-    console.log("CREATING AN USER");
-
     await connectToDatabase();
 
-    console.log("USER TO CREATE", user);
     const newUser = await User.create(user);
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {

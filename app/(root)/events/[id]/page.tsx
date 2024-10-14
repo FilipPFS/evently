@@ -7,6 +7,7 @@ import {
 import { IEvent } from "@/lib/database/models/event.model";
 import { formatDateTime } from "@/lib/utils";
 import { SearchParamProps } from "@/types";
+import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 
 const EventPage = async ({
@@ -14,6 +15,10 @@ const EventPage = async ({
   searchParams,
 }: SearchParamProps) => {
   const event: IEvent = await getSingleEvent(id);
+  const { sessionClaims } = auth();
+  const userId = sessionClaims?.userId;
+
+  const isMyEvent = event.organizer._id === userId;
 
   const relatedEvents = await getRelatedEventsByCategory({
     categoryId: event.category._id,
@@ -56,7 +61,7 @@ const EventPage = async ({
               </div>
             </div>
 
-            <CheckoutButton event={event} />
+            <CheckoutButton event={event} isMyEvent={isMyEvent} />
 
             <div className="flex flex-col gap-5">
               <div className="flex gap-2 md:gap-3">
@@ -113,8 +118,8 @@ const EventPage = async ({
           emptyStateSubtext="Comeback later"
           collectionType="All_Events"
           limit={3}
-          page={1}
-          totalPages={1}
+          page={searchParams.page as string}
+          totalPages={relatedEvents?.totalPages}
         />
       </section>
     </>

@@ -13,6 +13,10 @@ export default async function Home() {
     page: 1,
   });
 
+  if (!allEvents) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">

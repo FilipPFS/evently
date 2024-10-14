@@ -4,6 +4,7 @@ import {
   getRelatedEventsByCategory,
   getSingleEvent,
 } from "@/lib/actions/event.actions";
+import { checkIfOrdered } from "@/lib/actions/order.actions";
 import { IEvent } from "@/lib/database/models/event.model";
 import { formatDateTime } from "@/lib/utils";
 import { SearchParamProps } from "@/types";
@@ -16,7 +17,7 @@ const EventPage = async ({
 }: SearchParamProps) => {
   const event: IEvent = await getSingleEvent(id);
   const { sessionClaims } = auth();
-  const userId = sessionClaims?.userId;
+  const userId = sessionClaims?.userId as string;
 
   const isMyEvent = event.organizer._id === userId;
 
@@ -26,7 +27,10 @@ const EventPage = async ({
     page: searchParams.page as string,
   });
 
-  console.log("EVENT", event);
+  const alreadyOrdered = await checkIfOrdered({
+    userId,
+    eventId: event._id,
+  });
 
   return (
     <>
@@ -61,7 +65,11 @@ const EventPage = async ({
               </div>
             </div>
 
-            <CheckoutButton event={event} isMyEvent={isMyEvent} />
+            <CheckoutButton
+              event={event}
+              isMyEvent={isMyEvent}
+              isOrdered={alreadyOrdered}
+            />
 
             <div className="flex flex-col gap-5">
               <div className="flex gap-2 md:gap-3">

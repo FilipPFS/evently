@@ -7,11 +7,12 @@ import { checkoutOrder } from "@/lib/actions/order.actions";
 type Props = {
   event: IEvent;
   userId: string;
+  isOrdered?: boolean;
 };
 
 loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
 
-const Checkout = ({ event, userId }: Props) => {
+const Checkout = ({ event, userId, isOrdered }: Props) => {
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
     const query = new URLSearchParams(window.location.search);
@@ -45,6 +46,7 @@ const Checkout = ({ event, userId }: Props) => {
         size={"lg"}
         type="submit"
         role="link"
+        disabled={isOrdered}
       >
         {event.isFree ? "Get event for free" : "Buy Event"}
       </Button>

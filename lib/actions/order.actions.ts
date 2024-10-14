@@ -177,3 +177,25 @@ export async function getOrdersByUser({
     handleError(error);
   }
 }
+
+export const checkIfOrdered = async ({
+  userId,
+  eventId,
+}: {
+  userId: string;
+  eventId: string;
+}) => {
+  try {
+    const order = await Order.findOne({ buyer: userId, event: eventId });
+
+    console.log("ORDER", order);
+
+    if (order) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    handleError(error);
+  }
+};

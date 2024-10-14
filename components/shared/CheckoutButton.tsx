@@ -9,9 +9,10 @@ import Checkout from "./Checkout";
 type Props = {
   event: IEvent;
   isMyEvent: boolean;
+  isOrdered?: boolean;
 };
 
-const CheckoutButton = ({ event, isMyEvent }: Props) => {
+const CheckoutButton = ({ event, isMyEvent, isOrdered }: Props) => {
   const { user } = useUser();
   const userId = user?.publicMetadata.userId as string;
   const hasEventFinished = new Date(event.endDateTime) < new Date();
@@ -31,7 +32,9 @@ const CheckoutButton = ({ event, isMyEvent }: Props) => {
           </SignedOut>
 
           <SignedIn>
-            {!isMyEvent && <Checkout event={event} userId={userId} />}
+            {!isMyEvent && (
+              <Checkout event={event} userId={userId} isOrdered={isOrdered} />
+            )}
             {isMyEvent && (
               <Button asChild className="button rounded-full" size={"lg"}>
                 <Link href={`/orders/?eventId=${event._id}`}>See Orders</Link>
